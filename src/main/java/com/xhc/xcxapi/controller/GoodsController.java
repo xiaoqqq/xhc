@@ -26,13 +26,13 @@ public class GoodsController {
     /**
      * 通过 商品id 获取 商品list
      *
-     * @param goods_id 商品id
+     * @param g_id 商品id
      * @return 商品list
      */
     @RequestMapping(value = "/goods_id")
-    public BaseBean<Object> getGoodsById(String goods_id) {
+    public BaseBean<Object> getGoodsById(int g_id) {
         BaseBean<Object> baseBean = new BaseBean<>();
-        List<GoodsBean> goods = goodsMapper.findGoodsById(goods_id);
+        List<GoodsBean> goods = goodsMapper.findGoodsById(g_id);
         if (goods.size() > 0) {
             for (GoodsBean bean :
                     goods) {
@@ -50,14 +50,14 @@ public class GoodsController {
     /**
      * 获取商品名一样的商品
      *
-     * @param goods_name 商品名
+     * @param g_name 商品名
      * @return 商品list（商品名相同）
      */
     @RequestMapping(value = "/goods_name")
-    public BaseBean<Object> getGoodsByName(String goods_name) {
+    public BaseBean<Object> getGoodsByName(String g_name) {
         BaseBean<Object> baseBean = new BaseBean<>();
         List<GoodsBean> lists = new ArrayList<>();
-        List<GoodsBean> goods = goodsMapper.findGoodsByName(goods_name);
+        List<GoodsBean> goods = goodsMapper.findGoodsByName(g_name);
         if (goods.size() > 0) {
             for (GoodsBean bean :
                     goods) {

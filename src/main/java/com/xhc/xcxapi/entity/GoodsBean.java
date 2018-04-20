@@ -6,50 +6,58 @@ package com.xhc.xcxapi.entity;
  */
 public class GoodsBean {
 
-    private String goods_name;
-    private String goods_id;
-    private String goods_price;
-    private String goods_details;
-    private String goods_desc;
+    private String g_name;
+    private String g_remark;
+    private String createUser;
+    private String updateUser;
+    private String createTime;
+    private String updateTime;
 
-
-    public String getGoods_name() {
-        return goods_name;
+    public String getG_name() {
+        return g_name;
     }
 
-    public void setGoods_name(String goods_name) {
-        this.goods_name = goods_name;
+    public void setG_name(String g_name) {
+        this.g_name = g_name;
     }
 
-    public String getGoods_id() {
-        return goods_id;
+    public String getG_remark() {
+        return g_remark;
     }
 
-    public void setGoods_id(String goods_id) {
-        this.goods_id = goods_id;
+    public void setG_remark(String g_remark) {
+        this.g_remark = g_remark;
     }
 
-    public String getGoods_price() {
-        return goods_price;
+    public String getCreateUser() {
+        return createUser;
     }
 
-    public void setGoods_price(String goods_price) {
-        this.goods_price = goods_price;
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
     }
 
-    public String getGoods_details() {
-        return goods_details;
+    public String getUpdateUser() {
+        return updateUser;
     }
 
-    public void setGoods_details(String goods_details) {
-        this.goods_details = goods_details;
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
     }
 
-    public String getGoods_desc() {
-        return goods_desc;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setGoods_desc(String goods_desc) {
-        this.goods_desc = goods_desc;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

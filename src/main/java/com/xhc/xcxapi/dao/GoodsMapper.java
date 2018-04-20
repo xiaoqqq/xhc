@@ -13,9 +13,12 @@ import java.util.List;
 
 @Mapper
 public interface GoodsMapper {
-    @Select("select * from xhc.goods where goods_id = #{goods_id}")
-    List<GoodsBean> findGoodsById(String goods_id);
+    String SQL_SELECT_FINDGOODSBYID = "select * from xhc.Xhc_GoodsType where g_id = #{g_id}";
+    String SQL_SELECT_FINDGOODSBYNAME = "select * from xhc.Xhc_GoodsType where g_name = #{g_name}";
 
-    @Select("select * from xhc.goods where goods_name = #{goods_name}")
-    List<GoodsBean> findGoodsByName(String goods_name);
+    @Select(SQL_SELECT_FINDGOODSBYID)
+    List<GoodsBean> findGoodsById(int g_id);
+
+    @Select(SQL_SELECT_FINDGOODSBYNAME)
+    List<GoodsBean> findGoodsByName(String g_name);
 }
