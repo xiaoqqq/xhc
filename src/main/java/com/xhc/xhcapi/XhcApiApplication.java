@@ -1,14 +1,14 @@
-package com.xhc.xcxapi;
+package com.xhc.xhcapi;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@MapperScan("com.xhc.xcxapi.dao")
+@MapperScan("com.xhc.xhcapi.dao")
 @SpringBootApplication
-public class XcxApiApplication {
+public class XhcApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(XcxApiApplication.class, args);
+        SpringApplication.run(XhcApiApplication.class, args);
     }
 }

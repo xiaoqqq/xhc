@@ -1,6 +1,6 @@
-package com.xhc.xcxapi.dao;
+package com.xhc.xhcapi.dao;
 
-import com.xhc.xcxapi.entity.GoodsBean;
+import com.xhc.xhcapi.entity.GoodsBean;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 

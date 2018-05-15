@@ -1,4 +1,4 @@
-package com.xhc.xcxapi.entity;
+package com.xhc.xhcapi.entity;
 
 /**
  * @author xiaoqqq by 2018/4/17 15:39

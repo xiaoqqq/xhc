@@ -1,8 +1,8 @@
-package com.xhc.xcxapi.controller;
+package com.xhc.xhcapi.controller;
 
-import com.xhc.xcxapi.dao.GoodsMapper;
-import com.xhc.xcxapi.entity.BaseBean;
-import com.xhc.xcxapi.entity.GoodsBean;
+import com.xhc.xhcapi.dao.GoodsMapper;
+import com.xhc.xhcapi.entity.BaseBean;
+import com.xhc.xhcapi.entity.GoodsBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

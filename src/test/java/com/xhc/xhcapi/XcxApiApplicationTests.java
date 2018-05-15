@@ -1,4 +1,4 @@
-package com.xhc.xcxapi;
+package com.xhc.xhcapi;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
