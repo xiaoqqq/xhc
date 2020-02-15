@@ -4,6 +4,7 @@ import com.xhc.xhcapi.dao.GoodsMapper;
 import com.xhc.xhcapi.entity.BaseBean;
 import com.xhc.xhcapi.entity.GoodsBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping(value = "/search_goods", method = RequestMethod.POST)
+@RequestMapping(value = "/search_goods")
 public class GoodsController {
 
     @Autowired
@@ -29,6 +30,7 @@ public class GoodsController {
      * @param g_id 商品id
      * @return 商品list
      */
+    @CrossOrigin
     @RequestMapping(value = "/goods_id")
     public BaseBean<Object> getGoodsById(int g_id) {
         BaseBean<Object> baseBean = new BaseBean<>();
@@ -53,6 +55,7 @@ public class GoodsController {
      * @param g_name 商品名
      * @return 商品list（商品名相同）
      */
+    @CrossOrigin
     @RequestMapping(value = "/goods_name")
     public BaseBean<Object> getGoodsByName(String g_name) {
         BaseBean<Object> baseBean = new BaseBean<>();

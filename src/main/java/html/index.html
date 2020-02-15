@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<label class="col-sm-8 col-form-label text-right">销售目的地国家:</label>
+<select id="sales_country">
+    <option value="uk">英国</option>
+    <option value="de">德国</option>
+    <option value="fr">法国</option>
+    <option value="it">意大利</option>
+    <option value="es">西班牙</option>
+</select>
+<label class="col-sm-8 col-form-label text-right">仓库所在国家:</label>
+<select id="depot_country">
+    <option value="de_depot">德国</option>
+    <option value="uk_depot">英国</option>
+</select>
+
+<br><br>
+
+<label class="col-sm-8 col-form-label">长 </label><input id="chang" type="number" min="0.01" max="100.00" step="0.01"
+                                                        placeholder="请输入长度"><span
+        class="input-group-text">cm</span><br><br>
+<label class="col-sm-8 col-form-label">宽 </label><input id="kuan" type="number" min="0.01" max="100.00" step="0.01"
+                                                        placeholder="请输入宽度"><span
+        class="input-group-text">cm</span><br><br>
+<label class="col-sm-8 col-form-label">高 </label><input id="gao" type="number" min="0.01" max="100.00" step="0.01"
+                                                        placeholder="请输入高度"><span
+        class="input-group-text">cm</span><br><br>
+<label class="col-sm-8 col-form-label">重量</label><input id="zhongliang" type="number" placeholder="请输入重量"><span
+        class="input-group-text">g</span><br><br>
+<label class="col-sm-8 col-form-label">FBA配送费</label><span id="fba_fee" style="color: red">&emsp;</span><span
+        id="fba_fee_danwei">英镑</span><br><br>
+<label class="col-sm-8 col-form-label">售价</label><input id="shoujia" type="number" placeholder="你的售价"><span
+        id="money_danwei" class="input-group-text">英镑</span><br><br>
+<label class="col-sm-8 col-form-label">进价成本</label><input id="jinjiachengben" type="number" placeholder="进价成本"><span
+        id="money_chengben" class="input-group-text">人民币</span><br><br>
+<label class="col-sm-8 col-form-label">进货物流费用</label><input id="jinjiawuliu" type="number" placeholder="进货物流费用"><span
+        id="money_jinjia_wuliu" class="input-group-text">人民币</span><br><br>
+<label class="col-sm-8 col-form-label">FBA头程</label><input id="chengben" type="number" placeholder="FBA头程"><span
+        id="money_danwei_fba" class="input-group-text">人民币</span><br><br>
+<label class="col-sm-8 col-form-label">佣金比例（%）</label><input id="yongjin" type="number" placeholder="请输入佣金比例"><br><br><!--<span
+        id="money_danwei_yongjin" class="input-group-text">英镑</span>-->
+<!--<label class="col-sm-8 col-form-label">VAT（%）</label><input id="vat" type="number" placeholder="请输入佣金比例"><br><br>-->
+<label class="col-sm-8 col-form-label">利润</label><span id="lirun" style="color: red">&emsp;</span><span
+        id="lirun_money_danwei">英镑</span><br><br>
+
+<br><br>
+<input type="button" value="获取选中的国家" id='test'>
+<input type="button" value="计算运费" id='calculate_fee'>
+
+<!--<br>-->
+<!--<input type="button" value="发送get_ajax请求" id='btnAjax'>-->
+<!--<br>-->
+<!--<input type="button" value="发送post_ajax请求" id='btnPost'>-->
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript">
+    // 选中国家
+    document.querySelector('#test').onclick = function () {
+        var checkText = $("#sales_country").find("option:selected").text();  //获取Select选择的Text
+        // 获取销售地所在国家code
+        var sales_country = $("#sales_country").val();
+        var checkIndex = $("#sales_country ").get(0).selectedIndex;  //获取Select选择的索引值
+        var maxIndex = $("#sales_country option:last").attr("index");  //获取Select最大的索引值
+        var chang = $("#chang").val();
+        var kuan = $("#kuan").val();
+        var gao = $("#gao").val();
+        var zhongliang = $("#zhongliang").val();
+
+        // console.log(checkValue);
+        // console.log(chang);
+        // console.log(kuan);
+        // console.log(gao);
+        // console.log(zhongliang);
+
+        // var money_danwei = $("#money_danwei").text();
+        // console.log(money_danwei);
+        // $("#money_danwei").text("欧元");
+    };
+
+    // FBA配送费
+    document.querySelector('#calculate_fee').onclick = function () {
+        // 获取销售地所在国家code
+        var sales_country = $("#sales_country").val();
+        // 获取仓库所在国家code
+        var depot_country = $("#depot_country").val();
+        // 获取体积
+        var chang = $("#chang").val();
+        var kuan = $("#kuan").val();
+        var gao = $("#gao").val();
+        // 获取重量
+        var zhongliang = $("#zhongliang").val();
+
+        if (depot_country === 'de_depot') { // 仓库在德国
+            if (sales_country === 'uk') { // 销售国是英国
+                console.log("体积：" + chang * kuan * gao + "；重量：" + zhongliang)
+            } else {
+                console.log("体积：" + chang * kuan * gao + "；重量：" + zhongliang)
+            }
+        } else { // 仓库在英国，因为不考虑在其他国家设仓库
+            if (sales_country === 'uk') { // 销售国是英国
+                console.log("体积：" + chang * kuan * gao + "；重量：" + zhongliang)
+            } else {
+                console.log("体积：" + chang * kuan * gao + "；重量：" + zhongliang)
+            }
+        }
+
+    };
+
+
+    $(document).ready(function () {
+        $('#sales_country').change(function () {
+            var countryCode = $("#sales_country").val();//这就是selected的值
+            if (countryCode !== 'uk') {
+                $("#money_danwei").text("欧元");
+                $("#lirun_money_danwei").text("欧元");
+                $("#money_danwei_yongjin").text("欧元");
+                $("#fba_fee_danwei").text("欧元");
+            } else {
+                $("#money_danwei").text("英镑");
+                $("#lirun_money_danwei").text("英镑");
+                $("#money_danwei_yongjin").text("英镑");
+                $("#fba_fee_danwei").text("英镑");
+            }
+            console.log(countryCode);
+        })
+    });
+
+
+    /*// 绑定点击事件
+    document.querySelector('#btnAjax').onclick = function () {
+        // 发送ajax 请求 需要 五步
+
+        // （1）创建异步对象
+        var ajaxObj = new XMLHttpRequest();
+
+        // （2）设置请求的参数。包括：请求的方法、请求的url。
+        ajaxObj.open('get', 'http://127.0.0.1:8080/search_goods/goods_name?g_name=王老吉');
+
+        // （3）发送请求
+        ajaxObj.send();
+
+        //（4）注册事件。 onreadystatechange事件，状态改变时就会调用。
+        //如果要在数据完整请求回来的时候才调用，我们需要手动写一些判断的逻辑。
+        ajaxObj.onreadystatechange = function () {
+            // 为了保证 数据 完整返回，我们一般会判断 两个值
+            if (ajaxObj.readyState == 4 && ajaxObj.status == 200) {
+                // 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
+                // 5.在注册的事件中 获取 返回的 内容 并修改页面的显示
+                console.log('数据返回成功');
+
+                // 数据是保存在 异步对象的 属性中
+                console.log(ajaxObj.responseText);
+
+                // 修改页面的显示
+                // document.querySelector('h1').innerHTML = ajaxObj.responseText;
+            }
+        }
+    };
+
+    // 绑定点击事件
+    document.querySelector('#btnPost').onclick = function () {
+        // 异步对象
+        var xhr = new XMLHttpRequest();
+
+        // 设置属性
+        xhr.open('post', 'http://127.0.0.1:8080/search_goods/goods_name');
+
+        // 如果想要使用post提交数据,必须添加此行
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        // 将数据通过send方法传递
+        xhr.send('g_name=' + "王老吉");
+
+        // 发送并接受返回值
+        xhr.onreadystatechange = function () {
+            // 这步为判断服务器是否正确响应
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log(xhr.responseText);
+            }
+        };
+    }*/
+</script>
+</body>
+</html>
