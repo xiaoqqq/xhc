@@ -41,7 +41,7 @@ public class FbaFeeController {
                     feeSizeBean) {
                 baseBean.setCode(0);
                 baseBean.setMessage("查询成功");
-                baseBean.setRsult(bean);
+                baseBean.setResult(bean);
             }
         } else {
             baseBean.setCode(-1);

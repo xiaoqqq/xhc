@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface FbaFeeMapper {
     //    String SQL_SELECT_FINDGOODSBYVOLUME = "select * from xhc.goods_size where volume = #{volume}";
-    String SQL_SELECT_FINDGOODSBYVOLUME = "select * from goods_size where abs(volume - #{volume}) and volume>3999 and #{weight} <= max_weight limit 1";
+    String SQL_SELECT_FINDGOODSBYVOLUME = "select * from goods_size where abs(volume - #{volume}) >= 0 and volume >= #{volume} and #{weight} + packge_weight <= max_weight limit 1";
 
     @Select(SQL_SELECT_FINDGOODSBYVOLUME)
     List<GoodsSizeBean> findGoodsByVolume(@Param("volume") double volume, @Param("weight") double weight);

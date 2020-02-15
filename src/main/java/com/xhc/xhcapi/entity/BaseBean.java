@@ -25,11 +25,11 @@ public class BaseBean<T> {
         this.message = message;
     }
 
-    public T getRsult() {
+    public T getResult() {
         return result;
     }
 
-    public void setRsult(T t) {
+    public void setResult(T t) {
         this.result = t;
     }
 }

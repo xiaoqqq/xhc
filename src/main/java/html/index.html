@@ -9,9 +9,7 @@
 <select id="sales_country">
     <option value="uk">英国</option>
     <option value="de">德国</option>
-    <option value="fr">法国</option>
-    <option value="it">意大利</option>
-    <option value="es">西班牙</option>
+    <option value="other_eu">其他欧洲国家</option>
 </select>
 <label class="col-sm-8 col-form-label text-right">仓库所在国家:</label>
 <select id="depot_country">
@@ -32,8 +30,11 @@
         class="input-group-text">cm</span><br><br>
 <label class="col-sm-8 col-form-label">重量</label><input id="zhongliang" type="number" placeholder="请输入重量"><span
         class="input-group-text">g</span><br><br>
+<label class="col-sm-8 col-form-label">商品数量</label><input id="goods_number" type="number" placeholder="请输入商品数量"><span
+        class="input-group-text">个</span><br><br>
 <label class="col-sm-8 col-form-label">FBA配送费</label><span id="fba_fee" style="color: red">&emsp;</span><span
-        id="fba_fee_danwei">英镑</span><br><br>
+        id="fba_fee_danwei">英镑</span>
+<input type="button" value="计算运费" id='calculate_fee'><br><br>
 <label class="col-sm-8 col-form-label">售价</label><input id="shoujia" type="number" placeholder="你的售价"><span
         id="money_danwei" class="input-group-text">英镑</span><br><br>
 <label class="col-sm-8 col-form-label">进价成本</label><input id="jinjiachengben" type="number" placeholder="进价成本"><span
@@ -50,7 +51,6 @@
 
 <br><br>
 <input type="button" value="获取选中的国家" id='test'>
-<input type="button" value="计算运费" id='calculate_fee'>
 
 <!--<br>-->
 <!--<input type="button" value="发送get_ajax请求" id='btnAjax'>-->
@@ -81,52 +81,118 @@
         // $("#money_danwei").text("欧元");
     };
 
-    // FBA配送费
-    document.querySelector('#calculate_fee').onclick = function () {
+    // 通过传入长宽高和重量计算FBA配送费
+    function calculateFee(chang, kuan, gao, weight, goods_number) {
         // 获取销售地所在国家code
         var sales_country = $("#sales_country").val();
         // 获取仓库所在国家code
         var depot_country = $("#depot_country").val();
+
+        // 异步对象
+        var xhr = new XMLHttpRequest();
+
+        // 设置属性
+        xhr.open('post', 'http://127.0.0.1:8080/fee/search');
+
+        // 如果想要使用post提交数据,必须添加此行
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        // 将数据通过send方法传递
+        xhr.send('volume=' + chang * kuan * gao * goods_number + "&weight=" + weight * goods_number);
+
+        // 发送并接受返回值
+        xhr.onreadystatechange = function () {
+            // 这步为判断服务器是否正确响应
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log("体积：" + chang * kuan * gao * goods_number + "；重量：" + weight * goods_number);
+                console.log(xhr.responseText);
+                var json = JSON.parse(xhr.responseText);
+                if (json['code'] === 0) {
+                    var result = json['result'];
+                    var fbaFee;
+                    if (depot_country === 'de_depot') { // 仓库在德国
+                        if (sales_country === 'uk') { // 销售国是英国
+                            fbaFee = result["uk_efn_money"];
+                        } else if (sales_country === 'de') { // 销售国是德国
+                            fbaFee = result["de_money"];
+                        } else { // 销售是非英国
+                            fbaFee = result["non_un_efn_money"];
+                        }
+                    } else { // 仓库在英国，因为不考虑在其他国家设仓库
+                        if (sales_country === 'uk') { // 销售国是英国
+                            fbaFee = result["uk_money"];
+                        } else {
+                            fbaFee = result["non_un_efn_money"];
+                        }
+                    }
+                    // 显示运费 fbaFee
+                    $("#fba_fee").text(fbaFee);
+                } else {
+                    alert("error")
+                }
+            }
+        }
+    }
+
+    // FBA配送费
+    document.querySelector('#calculate_fee').onclick = function () {
         // 获取体积
         var chang = $("#chang").val();
         var kuan = $("#kuan").val();
         var gao = $("#gao").val();
         // 获取重量
-        var zhongliang = $("#zhongliang").val();
-
-        if (depot_country === 'de_depot') { // 仓库在德国
-            if (sales_country === 'uk') { // 销售国是英国
-                console.log("体积：" + chang * kuan * gao + "；重量：" + zhongliang)
-            } else {
-                console.log("体积：" + chang * kuan * gao + "；重量：" + zhongliang)
-            }
-        } else { // 仓库在英国，因为不考虑在其他国家设仓库
-            if (sales_country === 'uk') { // 销售国是英国
-                console.log("体积：" + chang * kuan * gao + "；重量：" + zhongliang)
-            } else {
-                console.log("体积：" + chang * kuan * gao + "；重量：" + zhongliang)
-            }
-        }
+        var weight = $("#zhongliang").val();
+        var goods_number = $("#goods_number").val();
+        calculateFee(chang, kuan, gao, weight, goods_number);
 
     };
 
 
     $(document).ready(function () {
         $('#sales_country').change(function () {
-            var countryCode = $("#sales_country").val();//这就是selected的值
+            var countryCode = $("#sales_country").val();
+            // 获取体积
+            var chang = $("#chang").val();
+            var kuan = $("#kuan").val();
+            var gao = $("#gao").val();
+            // 获取重量
+            var weight = $("#zhongliang").val();
+            var goods_number = $("#goods_number").val();
             if (countryCode !== 'uk') {
                 $("#money_danwei").text("欧元");
                 $("#lirun_money_danwei").text("欧元");
                 $("#money_danwei_yongjin").text("欧元");
                 $("#fba_fee_danwei").text("欧元");
+                calculateFee(chang, kuan, gao, weight, goods_number);
             } else {
                 $("#money_danwei").text("英镑");
                 $("#lirun_money_danwei").text("英镑");
                 $("#money_danwei_yongjin").text("英镑");
                 $("#fba_fee_danwei").text("英镑");
+                calculateFee(chang, kuan, gao, weight, goods_number);
             }
             console.log(countryCode);
-        })
+        });
+
+    });
+
+    $(document).ready(function () {
+        $('#depot_country').change(function () {
+            var countryCode = $("#depot_country").val();
+            // 获取体积
+            var chang = $("#chang").val();
+            var kuan = $("#kuan").val();
+            var gao = $("#gao").val();
+            // 获取重量
+            var weight = $("#zhongliang").val();
+            var goods_number = $("#goods_number").val();
+            if (countryCode !== 'uk') {
+                calculateFee(chang, kuan, gao, weight, goods_number);
+            } else {
+                calculateFee(chang, kuan, gao, weight, goods_number);
+            }
+            console.log(countryCode);
+        });
     });
 
 

@@ -40,7 +40,7 @@ public class GoodsController {
                     goods) {
                 baseBean.setCode(0);
                 baseBean.setMessage("查询成功");
-                baseBean.setRsult(bean);
+                baseBean.setResult(bean);
             }
         } else {
             baseBean.setCode(-1);
@@ -67,7 +67,7 @@ public class GoodsController {
                 baseBean.setCode(0);
                 baseBean.setMessage("查询成功");
                 lists.add(bean);
-                baseBean.setRsult(lists);
+                baseBean.setResult(lists);
             }
         } else {
             baseBean.setCode(-1);
