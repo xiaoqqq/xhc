@@ -45,7 +45,7 @@ public class FbaFeeController {
             }
         } else {
             baseBean.setCode(-1);
-            baseBean.setMessage("没有这个商品");
+            baseBean.setMessage("体积:" + volume + ",重量:" + weight);
         }
         return baseBean;
     }

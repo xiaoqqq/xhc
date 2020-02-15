@@ -21,36 +21,38 @@
 
 <label class="col-sm-8 col-form-label">长 </label><input id="chang" type="number" min="0.01" max="100.00" step="0.01"
                                                         placeholder="请输入长度"><span
-        class="input-group-text">cm</span><br><br>
+        class="input-group-text">cm</span>&emsp;&emsp;
 <label class="col-sm-8 col-form-label">宽 </label><input id="kuan" type="number" min="0.01" max="100.00" step="0.01"
                                                         placeholder="请输入宽度"><span
-        class="input-group-text">cm</span><br><br>
+        class="input-group-text">cm</span>&emsp;&emsp;
 <label class="col-sm-8 col-form-label">高 </label><input id="gao" type="number" min="0.01" max="100.00" step="0.01"
                                                         placeholder="请输入高度"><span
-        class="input-group-text">cm</span><br><br>
+        class="input-group-text">cm</span>&emsp;&emsp;
 <label class="col-sm-8 col-form-label">重量</label><input id="zhongliang" type="number" placeholder="请输入重量"><span
         class="input-group-text">g</span><br><br>
 <label class="col-sm-8 col-form-label">商品数量</label><input id="goods_number" type="number" placeholder="请输入商品数量"><span
         class="input-group-text">个</span><br><br>
 <label class="col-sm-8 col-form-label">FBA配送费</label><span id="fba_fee" style="color: red">&emsp;</span><span
-        id="fba_fee_danwei">英镑</span>
-<input type="button" value="计算运费" id='calculate_fee'><br><br>
-<label class="col-sm-8 col-form-label">售价</label><input id="shoujia" type="number" placeholder="你的售价"><span
+        id="fba_fee_danwei">英镑</span><br><br>
+<label class="col-sm-8 col-form-label">售价</label><input id="shoujia" type="number" min="0.01" max="100.00" step="0.01"
+                                                        placeholder="你的售价"><span
         id="money_danwei" class="input-group-text">英镑</span><br><br>
 <label class="col-sm-8 col-form-label">进价成本</label><input id="jinjiachengben" type="number" placeholder="进价成本"><span
-        id="money_chengben" class="input-group-text">人民币</span><br><br>
+        id="money_chengben" class="input-group-text">英镑</span><br><br>
 <label class="col-sm-8 col-form-label">进货物流费用</label><input id="jinjiawuliu" type="number" placeholder="进货物流费用"><span
-        id="money_jinjia_wuliu" class="input-group-text">人民币</span><br><br>
-<label class="col-sm-8 col-form-label">FBA头程</label><input id="chengben" type="number" placeholder="FBA头程"><span
-        id="money_danwei_fba" class="input-group-text">人民币</span><br><br>
-<label class="col-sm-8 col-form-label">佣金比例（%）</label><input id="yongjin" type="number" placeholder="请输入佣金比例"><br><br><!--<span
-        id="money_danwei_yongjin" class="input-group-text">英镑</span>-->
-<!--<label class="col-sm-8 col-form-label">VAT（%）</label><input id="vat" type="number" placeholder="请输入佣金比例"><br><br>-->
+        id="money_jinjia_wuliu" class="input-group-text">英镑</span><br><br>
+<label class="col-sm-8 col-form-label">FBA头程</label><input id="fba_chengben" type="number" placeholder="FBA头程"><span
+        id="money_danwei_fba" class="input-group-text">英镑</span><br><br>
+<label class="col-sm-8 col-form-label">佣金比例（%）</label><input id="yongjin" type="number" value="15"><br><br>
+<label class="col-sm-8 col-form-label">Paypal提现利息（%）</label><input id="paypal_lixi" type="number" min="0.1"
+                                                                   max="100.0" step="0.1" value="1.2"><br><br>
 <label class="col-sm-8 col-form-label">利润</label><span id="lirun" style="color: red">&emsp;</span><span
-        id="lirun_money_danwei">英镑</span><br><br>
+        id="lirun_money_danwei">英镑</span>&emsp;&emsp;&emsp;
+<label class="col-sm-8 col-form-label">利润</label><span id="lirun_rmb" style="color: red">&emsp;</span><span
+        id="lirun_money_rmb">人民币</span><br><br>
 
 <br><br>
-<input type="button" value="获取选中的国家" id='test'>
+<input type="button" value="计算运费" id='calculate_fee'><br><br>
 
 <!--<br>-->
 <!--<input type="button" value="发送get_ajax请求" id='btnAjax'>-->
@@ -58,35 +60,25 @@
 <!--<input type="button" value="发送post_ajax请求" id='btnPost'>-->
 <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript">
-    // 选中国家
-    document.querySelector('#test').onclick = function () {
-        var checkText = $("#sales_country").find("option:selected").text();  //获取Select选择的Text
-        // 获取销售地所在国家code
-        var sales_country = $("#sales_country").val();
-        var checkIndex = $("#sales_country ").get(0).selectedIndex;  //获取Select选择的索引值
-        var maxIndex = $("#sales_country option:last").attr("index");  //获取Select最大的索引值
-        var chang = $("#chang").val();
-        var kuan = $("#kuan").val();
-        var gao = $("#gao").val();
-        var zhongliang = $("#zhongliang").val();
-
-        // console.log(checkValue);
-        // console.log(chang);
-        // console.log(kuan);
-        // console.log(gao);
-        // console.log(zhongliang);
-
-        // var money_danwei = $("#money_danwei").text();
-        // console.log(money_danwei);
-        // $("#money_danwei").text("欧元");
-    };
-
     // 通过传入长宽高和重量计算FBA配送费
-    function calculateFee(chang, kuan, gao, weight, goods_number) {
+    function calculateFee(chang, kuan, gao, weight, goods_number, money_danwei) {
         // 获取销售地所在国家code
         var sales_country = $("#sales_country").val();
         // 获取仓库所在国家code
         var depot_country = $("#depot_country").val();
+        // 获取售价
+        var shoujia = $("#shoujia").val();
+        // 获取佣金比例
+        var yongjinPercent = $("#yongjin").val();
+        // 获取Paypal利息
+        var paypal_lixi = $("#paypal_lixi").val();
+        // 获取进价成本
+        var jinjiachengben = $("#jinjiachengben").val();
+        // 获取进价物流成本
+        var jinjiawuliu = $("#jinjiawuliu").val();
+        // 获取fba头程成本
+        var fba_chengben = $("#fba_chengben").val();
+        console.log(shoujia + "---" + yongjinPercent);
 
         // 异步对象
         var xhr = new XMLHttpRequest();
@@ -125,10 +117,55 @@
                             fbaFee = result["non_un_efn_money"];
                         }
                     }
-                    // 显示运费 fbaFee
-                    $("#fba_fee").text(fbaFee);
+                    //   &scur=cny,aed,cad&tcur=usd,cny,aed
+                    var url = 'http://api.k780.com/?app=finance.rate&scur=' + money_danwei + '&tcur=CNY&appkey=48756&sign=cc8b8705349b3b2de3b62424d2546b18&format=json&jsoncallback=data';
+                    console.log(url);
+                    // 获取当前汇率
+                    $.ajax({
+                        type: 'get',
+                        async: false,
+                        url: url,
+                        dataType: 'jsonp',
+                        jsonp: 'callback',
+                        jsonpCallback: 'data',
+                        success: function (data) {
+                            if (data.success != '1') {
+                                alert(data.msgid + ' ' + data.msg);
+                                exit;
+                            }
+                            // var huilvJson = JSON.parse(data);
+                            var huilvResult = data['result'];
+                            var huilv = huilvResult['rate'];
+                            console.log(huilv);
+                            // 显示运费 fbaFee
+                            $("#fba_fee").text(fbaFee);
+                            // 售价 - FBA配送费 - 佣金
+                            var difFbafee = shoujia - shoujia * (yongjinPercent) / 100 - fbaFee;
+                            console.log("售价-fba-佣金" + difFbafee);
+                            // 扣除paypal利息之后的钱
+                            var tixian_money = parseFloat((difFbafee * (100 - paypal_lixi) / 100).toString()).toFixed(4);
+                            console.log("提现：" + tixian_money);
+                            var lirun = parseFloat((tixian_money - jinjiachengben - jinjiawuliu - fba_chengben).toString()).toFixed(4);
+                            var lirunRMB = parseFloat(((tixian_money - jinjiachengben - jinjiawuliu - fba_chengben) * huilv).toString()).toFixed(4);
+                            console.log(lirun);
+                            // 显示利润
+                            $("#lirun").text(lirun);
+                            $("#lirun_rmb").text(lirunRMB);
+                            if (lirun < 0) {
+                                document.getElementById("lirun").style.color = "green";
+                                document.getElementById("lirun_rmb").style.color = "green";
+                            } else {
+                                document.getElementById("lirun").style.color = "red";
+                                document.getElementById("lirun_rmb").style.color = "red";
+                            }
+                        },
+                        error: function () {
+                            alert('fail');
+                        }
+                    });
+
                 } else {
-                    alert("error")
+                    alert(json['message'])
                 }
             }
         }
@@ -143,7 +180,15 @@
         // 获取重量
         var weight = $("#zhongliang").val();
         var goods_number = $("#goods_number").val();
-        calculateFee(chang, kuan, gao, weight, goods_number);
+        var money_danwei = 'GBP';
+        // 获取销售地所在国家code
+        var sales_country = $("#sales_country").val();
+        if (sales_country === 'uk') {
+            money_danwei = 'GBP';
+        } else {
+            money_danwei = 'EUR';
+        }
+        calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
 
     };
 
@@ -158,18 +203,26 @@
             // 获取重量
             var weight = $("#zhongliang").val();
             var goods_number = $("#goods_number").val();
+            var money_danwei = 'GBP';
+            // 获取销售地所在国家code
+            var sales_country = $("#sales_country").val();
+            if (sales_country === 'uk') {
+                money_danwei = 'GBP';
+            } else {
+                money_danwei = 'EUR';
+            }
             if (countryCode !== 'uk') {
                 $("#money_danwei").text("欧元");
                 $("#lirun_money_danwei").text("欧元");
                 $("#money_danwei_yongjin").text("欧元");
                 $("#fba_fee_danwei").text("欧元");
-                calculateFee(chang, kuan, gao, weight, goods_number);
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
             } else {
                 $("#money_danwei").text("英镑");
                 $("#lirun_money_danwei").text("英镑");
                 $("#money_danwei_yongjin").text("英镑");
                 $("#fba_fee_danwei").text("英镑");
-                calculateFee(chang, kuan, gao, weight, goods_number);
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
             }
             console.log(countryCode);
         });
@@ -186,10 +239,18 @@
             // 获取重量
             var weight = $("#zhongliang").val();
             var goods_number = $("#goods_number").val();
-            if (countryCode !== 'uk') {
-                calculateFee(chang, kuan, gao, weight, goods_number);
+            var money_danwei = 'GBP';
+            // 获取销售地所在国家code
+            var sales_country = $("#sales_country").val();
+            if (sales_country === uk) {
+                money_danwei = 'GBP';
             } else {
-                calculateFee(chang, kuan, gao, weight, goods_number);
+                money_danwei = 'EUR';
+            }
+            if (countryCode !== 'uk') {
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
+            } else {
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
             }
             console.log(countryCode);
         });
