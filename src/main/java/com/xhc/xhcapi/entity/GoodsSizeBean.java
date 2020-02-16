@@ -17,6 +17,8 @@ public class GoodsSizeBean {
     private double uk_efn_money;
     private double non_un_efn_money;
     private double volume;
+    private double uk_pe_money;
+    private double non_un_uk_pe_money;
 
     public int getGid() {
         return gid;
@@ -104,5 +106,21 @@ public class GoodsSizeBean {
 
     public void setVolume(double volume) {
         this.volume = volume;
+    }
+
+    public double getUk_pe_money() {
+        return uk_pe_money;
+    }
+
+    public void setUk_pe_money(double uk_pe_money) {
+        this.uk_pe_money = uk_pe_money;
+    }
+
+    public double getNon_un_uk_pe_money() {
+        return non_un_uk_pe_money;
+    }
+
+    public void setNon_un_uk_pe_money(double non_un_uk_pe_money) {
+        this.non_un_uk_pe_money = non_un_uk_pe_money;
     }
 }

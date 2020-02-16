@@ -5,32 +5,38 @@
     <title>Document</title>
 </head>
 <body>
-<label class="col-sm-8 col-form-label text-right">销售目的地国家:</label>
+<label>销售目的地国家:</label>
 <select id="sales_country">
     <option value="uk">英国</option>
     <option value="de">德国</option>
-    <option value="other_eu">其他欧洲国家</option>
-</select>
-<label class="col-sm-8 col-form-label text-right">仓库所在国家:</label>
+    <!--<option value="other_eu">其他欧洲国家</option>-->
+</select>&emsp;&emsp;
+<label>仓库所在国家:</label>
 <select id="depot_country">
     <option value="de_depot">德国</option>
     <option value="uk_depot">英国</option>
+</select>&emsp;&emsp;
+<label>是否参加泛欧计划:</label>
+<select id="plan_eu">
+    <option value="0">不参加</option>
+    <option value="1">参加（只发德国）</option>
 </select>
 
 <br><br>
 
-<label class="col-sm-8 col-form-label">长 </label><input id="chang" type="number" min="0.01" max="100.00" step="0.01"
+<label class="col-sm-8 col-form-label">长 </label><input id="chang" type="number" min="0.01" max="1000.00" step="0.01"
                                                         placeholder="请输入长度"><span
         class="input-group-text">cm</span>&emsp;&emsp;
-<label class="col-sm-8 col-form-label">宽 </label><input id="kuan" type="number" min="0.01" max="100.00" step="0.01"
+<label class="col-sm-8 col-form-label">宽 </label><input id="kuan" type="number" min="0.01" max="1000.00" step="0.01"
                                                         placeholder="请输入宽度"><span
         class="input-group-text">cm</span>&emsp;&emsp;
-<label class="col-sm-8 col-form-label">高 </label><input id="gao" type="number" min="0.01" max="100.00" step="0.01"
+<label class="col-sm-8 col-form-label">高 </label><input id="gao" type="number" min="0.01" max="1000.00" step="0.01"
                                                         placeholder="请输入高度"><span
         class="input-group-text">cm</span>&emsp;&emsp;
 <label class="col-sm-8 col-form-label">重量</label><input id="zhongliang" type="number" placeholder="请输入重量"><span
         class="input-group-text">g</span><br><br>
-<label class="col-sm-8 col-form-label">商品数量</label><input id="goods_number" type="number" placeholder="请输入商品数量"><span
+<label class="col-sm-8 col-form-label">商品数量</label><input id="goods_number" type="number" value="1"
+                                                          placeholder="请输入商品数量"><span
         class="input-group-text">个</span><br><br>
 <label class="col-sm-8 col-form-label">FBA配送费</label><span id="fba_fee" style="color: red">&emsp;</span><span
         id="fba_fee_danwei">英镑</span><br><br>
@@ -51,6 +57,15 @@
 <label class="col-sm-8 col-form-label">利润</label><span id="lirun_rmb" style="color: red">&emsp;</span><span
         id="lirun_money_rmb">人民币</span><br><br>
 
+<label class="col-sm-8 col-form-label">英镑-人民币</label><input id="gbp_huilv" type="number" min="0.0001" max="100.0000"
+                                                            step="0.0001" value="9.1131"
+                                                            placeholder="英镑汇率">
+<span id="local_gbp_huilv">人民币</span>&emsp;&emsp;&emsp;
+<label class="col-sm-8 col-form-label">欧元-人民币</label><input id="eur_huilv" type="number" min="0.0001" max="100.0000"
+                                                            step="0.0001" value="7.5657"
+                                                            placeholder="欧元汇率">
+<span id="local_eur_huilv">人民币</span>&emsp;&emsp;&emsp;
+
 <br><br>
 <input type="button" value="计算运费" id='calculate_fee'><br><br>
 
@@ -61,7 +76,7 @@
 <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript">
     // 通过传入长宽高和重量计算FBA配送费
-    function calculateFee(chang, kuan, gao, weight, goods_number, money_danwei) {
+    function calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu) {
         // 获取销售地所在国家code
         var sales_country = $("#sales_country").val();
         // 获取仓库所在国家code
@@ -78,8 +93,14 @@
         var jinjiawuliu = $("#jinjiawuliu").val();
         // 获取fba头程成本
         var fba_chengben = $("#fba_chengben").val();
+        // 英镑本地汇率
+        var gbp_huilv = $("#gbp_huilv").val();
+        // 欧元本地汇率
+        var eur_huilv = $("#eur_huilv").val();
+
         console.log(shoujia + "---" + yongjinPercent);
 
+        console.log("是否泛欧计划：" + plan_eu);
         // 异步对象
         var xhr = new XMLHttpRequest();
 
@@ -90,7 +111,7 @@
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
         // 将数据通过send方法传递
-        xhr.send('volume=' + chang * kuan * gao * goods_number + "&weight=" + weight * goods_number);
+        xhr.send('chang=' + chang + '&kuan=' + kuan + '&gao=' + gao + "&weight=" + weight * goods_number);
 
         // 发送并接受返回值
         xhr.onreadystatechange = function () {
@@ -102,25 +123,62 @@
                 if (json['code'] === 0) {
                     var result = json['result'];
                     var fbaFee;
-                    if (depot_country === 'de_depot') { // 仓库在德国
-                        if (sales_country === 'uk') { // 销售国是英国
-                            fbaFee = result["uk_efn_money"];
-                        } else if (sales_country === 'de') { // 销售国是德国
-                            fbaFee = result["de_money"];
-                        } else { // 销售是非英国
-                            fbaFee = result["non_un_efn_money"];
+                    if (chang * kuan * gao >= 129076) {
+                        if (plan_eu === '1') { // 泛欧，大件大号
+                            if (depot_country === 'de_depot') { // 仓库在德国
+                                if (sales_country === 'uk') { // 销售国是英国
+                                    fbaFee = result["uk_pe_money"];
+                                } else if (sales_country === 'de') { // 销售国是德国
+                                    fbaFee = result["de_money"];
+                                } else { // 销售是非英国
+                                    fbaFee = result["non_un_uk_pe_money"];
+                                }
+                            } else { // 仓库在英国，因为不考虑在其他国家设仓库
+                                if (sales_country === 'uk') { // 销售国是英国
+                                    fbaFee = result["uk_money"];
+                                } else {
+                                    fbaFee = result["non_un_uk_pe_money"];
+                                }
+                            }
+                        } else { // 不泛欧，大件大号
+                            if (depot_country === 'de_depot') { // 仓库在德国
+                                if (sales_country === 'uk') { // 销售国是英国
+                                    fbaFee = result["uk_efn_money"];
+                                } else if (sales_country === 'de') { // 销售国是德国
+                                    fbaFee = result["de_money"];
+                                } else { // 销售是非英国
+                                    fbaFee = result["non_un_efn_money"];
+                                }
+                            } else { // 仓库在英国，因为不考虑在其他国家设仓库
+                                if (sales_country === 'uk') { // 销售国是英国
+                                    fbaFee = result["uk_money"];
+                                } else {
+                                    fbaFee = result["non_un_efn_money"];
+                                }
+                            }
                         }
-                    } else { // 仓库在英国，因为不考虑在其他国家设仓库
-                        if (sales_country === 'uk') { // 销售国是英国
-                            fbaFee = result["uk_money"];
-                        } else {
-                            fbaFee = result["non_un_efn_money"];
+                    } else { // 非大件大号
+                        if (depot_country === 'de_depot') { // 仓库在德国
+                            if (sales_country === 'uk') { // 销售国是英国
+                                fbaFee = result["uk_efn_money"];
+                            } else if (sales_country === 'de') { // 销售国是德国
+                                fbaFee = result["de_money"];
+                            } else { // 销售是非英国
+                                fbaFee = result["non_un_efn_money"];
+                            }
+                        } else { // 仓库在英国，因为不考虑在其他国家设仓库
+                            if (sales_country === 'uk') { // 销售国是英国
+                                fbaFee = result["uk_money"];
+                            } else {
+                                fbaFee = result["non_un_efn_money"];
+                            }
                         }
                     }
                     //   &scur=cny,aed,cad&tcur=usd,cny,aed
                     var url = 'http://api.k780.com/?app=finance.rate&scur=' + money_danwei + '&tcur=CNY&appkey=48756&sign=cc8b8705349b3b2de3b62424d2546b18&format=json&jsoncallback=data';
                     console.log(url);
                     // 获取当前汇率
+                    var huilv = 1;
                     $.ajax({
                         type: 'get',
                         async: false,
@@ -129,14 +187,18 @@
                         jsonp: 'callback',
                         jsonpCallback: 'data',
                         success: function (data) {
-                            if (data.success != '1') {
-                                alert(data.msgid + ' ' + data.msg);
-                                exit;
+                            if (data.success !== '1') {
+                                // 本地汇率
+                                if (sales_country === 'uk') {
+                                    huilv = gbp_huilv;
+                                } else {
+                                    huilv = eur_huilv;
+                                }
+                            } else {
+                                // var huilvJson = JSON.parse(data);
+                                var huilvResult = data['result'];
+                                huilv = huilvResult['rate'];
                             }
-                            // var huilvJson = JSON.parse(data);
-                            var huilvResult = data['result'];
-                            var huilv = huilvResult['rate'];
-                            console.log(huilv);
                             // 显示运费 fbaFee
                             $("#fba_fee").text(fbaFee);
                             // 售价 - FBA配送费 - 佣金
@@ -163,7 +225,6 @@
                             alert('fail');
                         }
                     });
-
                 } else {
                     alert(json['message'])
                 }
@@ -183,12 +244,14 @@
         var money_danwei = 'GBP';
         // 获取销售地所在国家code
         var sales_country = $("#sales_country").val();
+        // 是否参加泛欧计划
+        var plan_eu = $("#plan_eu").val();
         if (sales_country === 'uk') {
             money_danwei = 'GBP';
         } else {
             money_danwei = 'EUR';
         }
-        calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
+        calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu);
 
     };
 
@@ -206,6 +269,8 @@
             var money_danwei = 'GBP';
             // 获取销售地所在国家code
             var sales_country = $("#sales_country").val();
+            // 是否参加泛欧计划
+            var plan_eu = $("#plan_eu").val();
             if (sales_country === 'uk') {
                 money_danwei = 'GBP';
             } else {
@@ -216,13 +281,13 @@
                 $("#lirun_money_danwei").text("欧元");
                 $("#money_danwei_yongjin").text("欧元");
                 $("#fba_fee_danwei").text("欧元");
-                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu);
             } else {
                 $("#money_danwei").text("英镑");
                 $("#lirun_money_danwei").text("英镑");
                 $("#money_danwei_yongjin").text("英镑");
                 $("#fba_fee_danwei").text("英镑");
-                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu);
             }
             console.log(countryCode);
         });
@@ -242,15 +307,46 @@
             var money_danwei = 'GBP';
             // 获取销售地所在国家code
             var sales_country = $("#sales_country").val();
-            if (sales_country === uk) {
+            // 是否参加泛欧计划
+            var plan_eu = $("#plan_eu").val();
+            if (sales_country === 'uk') {
                 money_danwei = 'GBP';
             } else {
                 money_danwei = 'EUR';
             }
             if (countryCode !== 'uk') {
-                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu);
             } else {
-                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei);
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu);
+            }
+            console.log(countryCode);
+        });
+    });
+
+    $(document).ready(function () {
+        $('#plan_eu').change(function () {
+            var countryCode = $("#sales_country").val();
+            // 获取体积
+            var chang = $("#chang").val();
+            var kuan = $("#kuan").val();
+            var gao = $("#gao").val();
+            // 获取重量
+            var weight = $("#zhongliang").val();
+            var goods_number = $("#goods_number").val();
+            var money_danwei = 'GBP';
+            // 获取销售地所在国家code
+            var sales_country = $("#sales_country").val();
+            // 是否参加泛欧计划
+            var plan_eu = $("#plan_eu").val();
+            if (sales_country === 'uk') {
+                money_danwei = 'GBP';
+            } else {
+                money_danwei = 'EUR';
+            }
+            if (countryCode !== 'uk') {
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu);
+            } else {
+                calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu);
             }
             console.log(countryCode);
         });

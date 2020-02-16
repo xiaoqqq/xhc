@@ -26,16 +26,41 @@ public class FbaFeeController {
     FbaFeeMapper fbaFeeMapper;
 
     /**
-     * 通过 商品id 获取 商品list
+     * 通过商品的体积，以及重量计算fba运费
      *
-     * @param volume 体积
-     * @return 商品list
+     * @param chang
+     * @param kuan
+     * @param gao
+     * @param weight
+     * @return
      */
     @CrossOrigin
     @RequestMapping(value = "/search")
-    public BaseBean<Object> getGoodsById(double volume, double weight) {
+    public BaseBean<Object> getGoodsById(double chang, double kuan, double gao, double weight) {
         BaseBean<Object> baseBean = new BaseBean<>();
-        List<GoodsSizeBean> feeSizeBean = fbaFeeMapper.findGoodsByVolume(volume, weight);
+        double volume = chang * kuan * gao;
+        if (chang >= 150 || kuan >= 150 || gao >= 150) { // 大件大号，根据重量来判断运费
+            double chang1 = 150;
+            double kuan1 = 150;
+            double gao1 = 150;
+            List<GoodsSizeBean> feeSizeBean = fbaFeeMapper.findGoodsByWeight(chang1, kuan1, gao1, weight);
+            response(weight, baseBean, volume, feeSizeBean);
+        } else {
+            List<GoodsSizeBean> feeSizeBean = fbaFeeMapper.findGoodsByVolume(volume, weight);
+            response(weight, baseBean, volume, feeSizeBean);
+        }
+        return baseBean;
+    }
+
+    /**
+     * 返回结果
+     *
+     * @param weight
+     * @param baseBean
+     * @param volume
+     * @param feeSizeBean
+     */
+    private void response(double weight, BaseBean<Object> baseBean, double volume, List<GoodsSizeBean> feeSizeBean) {
         if (feeSizeBean.size() > 0) {
             for (GoodsSizeBean bean :
                     feeSizeBean) {
@@ -45,8 +70,7 @@ public class FbaFeeController {
             }
         } else {
             baseBean.setCode(-1);
-            baseBean.setMessage("体积:" + volume + ",重量:" + weight);
+            baseBean.setMessage("error");
         }
-        return baseBean;
     }
 }
