@@ -40,31 +40,46 @@
         class="input-group-text">个</span><br><br>
 <label class="col-sm-8 col-form-label">FBA配送费</label><span id="fba_fee" style="color: red">&emsp;</span><span
         id="fba_fee_danwei">英镑</span><br><br>
-<label class="col-sm-8 col-form-label">售价</label><input id="shoujia" type="number" min="0.01" max="100.00" step="0.01"
+<label class="col-sm-8 col-form-label">售价</label><input id="shoujia" type="number" min="0.01" max="1000.00"
+                                                        step="0.01"
                                                         placeholder="你的售价"><span
         id="money_danwei" class="input-group-text">英镑</span><br><br>
-<label class="col-sm-8 col-form-label">进价成本</label><input id="jinjiachengben" type="number" placeholder="进价成本"><span
+<label class="col-sm-8 col-form-label">进价成本</label><input id="jinjiachengben" type="number" min="0.01" max="1000.00"
+                                                          step="0.01"
+                                                          placeholder="进价成本"><span
         id="money_chengben" class="input-group-text">英镑</span><br><br>
-<label class="col-sm-8 col-form-label">进货物流费用</label><input id="jinjiawuliu" type="number" placeholder="进货物流费用"><span
+<label class="col-sm-8 col-form-label">进货物流费用</label><input id="jinjiawuliu" type="number" min="0.01" max="1000.00"
+                                                            step="0.01" placeholder="进货物流费用"><span
         id="money_jinjia_wuliu" class="input-group-text">英镑</span><br><br>
 <label class="col-sm-8 col-form-label">FBA头程</label><input id="fba_chengben" type="number" placeholder="FBA头程"><span
         id="money_danwei_fba" class="input-group-text">英镑</span><br><br>
 <label class="col-sm-8 col-form-label">佣金比例（%）</label><input id="yongjin" type="number" value="15"><br><br>
 <label class="col-sm-8 col-form-label">Paypal提现利息（%）</label><input id="paypal_lixi" type="number" min="0.1"
                                                                    max="100.0" step="0.1" value="1.2"><br><br>
-<label class="col-sm-8 col-form-label">利润</label><span id="lirun" style="color: red">&emsp;</span><span
+<label class="col-sm-8 col-form-label">利润</label>&emsp;<span id="lirun" style="color: red;font-size: 24px">&emsp;</span>&emsp;<span
         id="lirun_money_danwei">英镑</span>&emsp;&emsp;&emsp;
-<label class="col-sm-8 col-form-label">利润</label><span id="lirun_rmb" style="color: red">&emsp;</span><span
+<label class="col-sm-8 col-form-label">利润</label>&emsp;<span id="lirun_rmb" style="color: red;font-size: 24px"></span>&emsp;<span
         id="lirun_money_rmb">人民币</span><br><br>
 
-<label class="col-sm-8 col-form-label">英镑-人民币</label><input id="gbp_huilv" type="number" min="0.0001" max="100.0000"
-                                                            step="0.0001" value="9.1131"
-                                                            placeholder="英镑汇率">
-<span id="local_gbp_huilv">人民币</span>&emsp;&emsp;&emsp;
-<label class="col-sm-8 col-form-label">欧元-人民币</label><input id="eur_huilv" type="number" min="0.0001" max="100.0000"
-                                                            step="0.0001" value="7.5657"
-                                                            placeholder="欧元汇率">
-<span id="local_eur_huilv">人民币</span>&emsp;&emsp;&emsp;
+<label class="col-sm-8 col-form-label">英镑 - 人民币</label><input id="gbp_huilv" type="number" min="0.0001" max="100.0000"
+                                                              step="0.0001" value="9.1131"
+                                                              placeholder="英镑->人民币汇率">
+<span id="local_gbp_huilv">人民币</span>&emsp;
+<label class="col-sm-8 col-form-label">人民币 - 英镑</label><input id="rmb_gbp_huilv" type="number" min="0.0001"
+                                                              max="100.0000"
+                                                              step="0.0001" value="0.1097"
+                                                              placeholder="人民币->英镑汇率">
+<span id="local_rmb_gbp_huilv">英镑</span>&emsp;
+<br><br>
+<label class="col-sm-8 col-form-label">欧元 - 人民币</label><input id="eur_huilv" type="number" min="0.0001" max="100.0000"
+                                                              step="0.0001" value="7.5657"
+                                                              placeholder="欧元汇率">
+<span id="local_eur_huilv">人民币</span>&emsp;
+<label class="col-sm-8 col-form-label">人民币 - 欧元</label><input id="rmb_eur_huilv" type="number" min="0.0001"
+                                                              max="100.0000"
+                                                              step="0.0001" value="0.1322"
+                                                              placeholder="人民币->欧元汇率">
+<span id="local_rmb_eur_huilv">欧元</span>&emsp;
 
 <br><br>
 <input type="button" value="计算运费" id='calculate_fee'><br><br>
@@ -97,6 +112,10 @@
         var gbp_huilv = $("#gbp_huilv").val();
         // 欧元本地汇率
         var eur_huilv = $("#eur_huilv").val();
+        // 人民币->英镑本地汇率
+        var rmb_gbp_huilv = $("#rmb_gbp_huilv").val();
+        // 人民币->欧元本地汇率
+        var rmb_eur_huilv = $("#rmb_eur_huilv").val();
 
         console.log(shoujia + "---" + yongjinPercent);
 
@@ -177,9 +196,37 @@
                     //   &scur=cny,aed,cad&tcur=usd,cny,aed
                     var url = 'http://api.k780.com/?app=finance.rate&scur=' + money_danwei + '&tcur=CNY&appkey=48756&sign=cc8b8705349b3b2de3b62424d2546b18&format=json&jsoncallback=data';
                     console.log(url);
-                    // 获取当前汇率
+                    // 本地汇率
                     var huilv = 1;
-                    $.ajax({
+                    if (sales_country === 'uk') {
+                        huilv = gbp_huilv;
+                    } else {
+                        huilv = eur_huilv;
+                    }
+                    // 显示运费 fbaFee
+                    $("#fba_fee").text(fbaFee);
+                    // 售价 - FBA配送费 - 佣金
+                    var difFbafee = shoujia - shoujia * (yongjinPercent) / 100 - fbaFee;
+                    console.log("售价-fba-佣金" + difFbafee);
+                    // 扣除paypal利息之后的钱
+                    var tixian_money = parseFloat((difFbafee * (100 - paypal_lixi) / 100).toString()).toFixed(4);
+                    console.log("提现：" + tixian_money);
+                    var lirun = parseFloat((tixian_money - jinjiachengben - jinjiawuliu - fba_chengben).toString()).toFixed(4);
+                    var lirunRMB = parseFloat(((tixian_money - jinjiachengben - jinjiawuliu - fba_chengben) * huilv).toString()).toFixed(4);
+                    console.log(lirun);
+                    // 显示利润
+                    $("#lirun").text(lirun);
+                    $("#lirun_rmb").text(lirunRMB);
+                    if (lirun < 0) {
+                        document.getElementById("lirun").style.color = "green";
+                        document.getElementById("lirun_rmb").style.color = "green";
+                    } else {
+                        document.getElementById("lirun").style.color = "red";
+                        document.getElementById("lirun_rmb").style.color = "red";
+                    }
+
+                    // 获取当前汇率
+                    /*$.ajax({
                         type: 'get',
                         async: false,
                         url: url,
@@ -224,7 +271,7 @@
                         error: function () {
                             alert('fail');
                         }
-                    });
+                    });*/
                 } else {
                     alert(json['message'])
                 }
@@ -281,12 +328,30 @@
                 $("#lirun_money_danwei").text("欧元");
                 $("#money_danwei_yongjin").text("欧元");
                 $("#fba_fee_danwei").text("欧元");
+                $("#money_danwei").text("欧元");
+                $("#money_chengben").text("欧元");
+                $("#money_danwei_fba").text("欧元");
+                var a = $("#shoujia").val() * 1.2045;
+                $("#shoujia").val(a.toFixed(2));
+                var b = $("#jinjiachengben").val() * 1.2045;
+                $("#jinjiachengben").val(b.toFixed(2));
+                var c = $("#jinjiawuliu").val() * 1.2045;
+                $("#jinjiawuliu").val(c.toFixed(2));
                 calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu);
             } else {
                 $("#money_danwei").text("英镑");
                 $("#lirun_money_danwei").text("英镑");
                 $("#money_danwei_yongjin").text("英镑");
                 $("#fba_fee_danwei").text("英镑");
+                $("#money_danwei").text("英镑");
+                $("#money_chengben").text("英镑");
+                $("#money_danwei_fba").text("英镑");
+                var a = $("#shoujia").val() * 0.8302;
+                $("#shoujia").val(a.toFixed(2));
+                var b = $("#jinjiachengben").val() * 0.8302;
+                $("#jinjiachengben").val(b.toFixed(2));
+                var c = $("#jinjiawuliu").val() * 0.8302;
+                $("#jinjiawuliu").val(c.toFixed(2));
                 calculateFee(chang, kuan, gao, weight, goods_number, money_danwei, plan_eu);
             }
             console.log(countryCode);
